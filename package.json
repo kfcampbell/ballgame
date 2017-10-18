@@ -2,6 +2,9 @@
   "name": "first_browser_game",
   "version": "1.0.0",
   "description": "Tutorial attempt at making a multiplayer browser game.",
+  "engines": {
+    "node": "8.5.0"
+  },
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
