@@ -20,7 +20,7 @@ app.get('/', function (request, response) {
 });
 
 // starts the server
-server.listen(5000, function () {
+server.listen(port, function () {
     console.log('starting server on port 5000');
 });
 
