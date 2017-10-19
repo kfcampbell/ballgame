@@ -52,8 +52,15 @@ document.addEventListener('keyup', function (event) {
 });
 
 socket.emit('new player');
-socket.on('player_assignment', function(player){
+socket.on('player_assignment', function (player) {
   localPlayer = player;
+  movement = {
+    up: false,
+    down: false,
+    left: false,
+    right: false,
+    shooting: false
+  };
 });
 
 // give the server the current state of movement 60 times a second
@@ -80,9 +87,9 @@ setInterval(function () {
   renderLocalPlayerPosition();
 }, 1000 / 60);
 
-function renderLocalPlayerPosition(){
-  if(!localPlayer) return;
-  if(localPlayer.x < 0 || localPlayer.y < 0) return;
+function renderLocalPlayerPosition() {
+  if (!localPlayer) return;
+  if (localPlayer.x < 0 || localPlayer.y < 0) return;
   var color = localPlayer.color;
   context.fillStyle = color;
   context.beginPath();
@@ -90,13 +97,13 @@ function renderLocalPlayerPosition(){
   context.fill();
 }
 
-function renderLocalPlayerMisslePosition(){
-    if (!localPlayer.missle) return;
-    if (localPlayer.missle.x < 0 || localPlayer.missle.y < 0) return;
-    context.fillStyle = localPlayer.color;
-    context.beginPath();
-    context.arc(localPlayer.missle.x, localPlayer.missle.y, 5, 0, (2 * Math.PI));
-    context.fill();
+function renderLocalPlayerMisslePosition() {
+  if (!localPlayer.missle) return;
+  if (localPlayer.missle.x < 0 || localPlayer.missle.y < 0) return;
+  context.fillStyle = localPlayer.color;
+  context.beginPath();
+  context.arc(localPlayer.missle.x, localPlayer.missle.y, 5, 0, (2 * Math.PI));
+  context.fill();
 }
 
 
@@ -105,7 +112,7 @@ socket.on('state', function (players) {
   var localPlayerDied = true;
   for (var id in players) {
 
-    if(localPlayer && localPlayer.socketId === id){
+    if (localPlayer && localPlayer.socketId === id) {
       var serverLocalPlayer = players[id];
       localPlayer = serverLocalPlayer;
       renderLocalPlayerPosition();
@@ -130,16 +137,16 @@ socket.on('state', function (players) {
     context.arc(missle.x, missle.y, 5, 0, (2 * Math.PI));
     context.fill();
   }
-  
-  if(localPlayerDied){
-    if(!localPlayer) return;
-    localPlayer.x = 300;
-    localPlayer.y = 300;
-    localPlayer.missle.x = -1;
-    localPlayer.missle.y = -1;
 
+  if (localPlayerDied) {
+    if (!localPlayer) return;
+
+    // respawn local player
+    localPlayer = null;
+    socket.emit('new player');
+
+    // only alert user once that they died before respawning
     alert('you died!');
     console.log('you died!');
-    renderLocalPlayerPosition();
   }
 });
