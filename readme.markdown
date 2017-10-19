@@ -4,7 +4,7 @@ I'm playing around and trying to learn node, socket.io, and increase my familiar
 
 ## Link
 
-Play on https://salty-eyrie-26010.herokuapp.com/
+Play on https://itsaballgameorsomething.herokuapp.com/ 
 
 ## WishList
     [x] remove ball on disconnect
