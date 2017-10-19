@@ -82,6 +82,7 @@ setInterval(function () {
 
 function renderLocalPlayerPosition(){
   if(!localPlayer) return;
+  if(localPlayer.x < 0 || localPlayer.y < 0) return;
   var color = localPlayer.color;
   context.fillStyle = color;
   context.beginPath();
@@ -101,6 +102,7 @@ function renderLocalPlayerMisslePosition(){
 
 socket.on('state', function (players) {
   context.clearRect(0, 0, 800, 600);
+  var localPlayerDied = true;
   for (var id in players) {
 
     if(localPlayer && localPlayer.socketId === id){
@@ -108,6 +110,7 @@ socket.on('state', function (players) {
       localPlayer = serverLocalPlayer;
       renderLocalPlayerPosition();
       renderLocalPlayerMisslePosition();
+      localPlayerDied = false;
       continue;
     }
 
@@ -126,5 +129,17 @@ socket.on('state', function (players) {
     context.beginPath();
     context.arc(missle.x, missle.y, 5, 0, (2 * Math.PI));
     context.fill();
+  }
+  
+  if(localPlayerDied){
+    if(!localPlayer) return;
+    localPlayer.x = 300;
+    localPlayer.y = 300;
+    localPlayer.missle.x = -1;
+    localPlayer.missle.y = -1;
+
+    alert('you died!');
+    console.log('you died!');
+    renderLocalPlayerPosition();
   }
 });
