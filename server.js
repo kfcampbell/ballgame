@@ -30,6 +30,7 @@ io.on('connection', function (socket) {
 
     socket.on('new player', function () {
         players[socket.id] = {
+            socketId: socket.id,
             x: 300,
             y: 300,
             missle: {
@@ -44,6 +45,7 @@ io.on('connection', function (socket) {
             },
             color: 'rgb(' + Math.trunc(Math.random() * 255) + ',' + Math.trunc(Math.random() * 255) + ',' + Math.trunc(Math.random() * 255) + ')'
         };
+        socket.emit('player_assignment', players[socket.id]);
     });
 
     socket.on('movement', function (movement) {
