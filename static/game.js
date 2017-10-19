@@ -106,9 +106,18 @@ function renderLocalPlayerMisslePosition() {
   context.fill();
 }
 
+// make this take in the whole player. reassign local player and set the title.
 socket.on('death', function(key){
-  if(key === localPlayer.key){
-    alert('you died!');
+  if(key === localPlayer.socketId){
+    //alert('you died!');
+    document.getElementById('statsCounter').innerHTML = "Kills: " + 0 + " // Deaths: 500";
+  }
+});
+
+// make this take in the whole player. reassign local player and then set the title.
+socket.on('kill', function(key){
+  if(key === localPlayer.socketId){
+    document.getElementById('statsCounter').innerHTML = "Kills: " + (localPlayer.kills + 1) + " // Deaths: 500";
   }
 });
 

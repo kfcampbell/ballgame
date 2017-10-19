@@ -107,7 +107,9 @@ function checkAllCollisions(players, socketId) {
                         players[otherKey].deaths += 1;
                         players[otherKey].x = 300;
                         players[otherKey].y = 300;
+                        players[socketId].kills += 1;
                         io.sockets.emit('death', otherKey);
+                        io.sockets.emit('kill', socketId);
                     }
                 }
             }
