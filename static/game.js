@@ -106,6 +106,11 @@ function renderLocalPlayerMisslePosition() {
   context.fill();
 }
 
+socket.on('death', function(key){
+  if(key === localPlayer.key){
+    alert('you died!');
+  }
+});
 
 socket.on('state', function (players) {
   context.clearRect(0, 0, 800, 600);
@@ -117,7 +122,6 @@ socket.on('state', function (players) {
       localPlayer = serverLocalPlayer;
       renderLocalPlayerPosition();
       renderLocalPlayerMisslePosition();
-      localPlayerDied = false;
       continue;
     }
 
@@ -136,17 +140,5 @@ socket.on('state', function (players) {
     context.beginPath();
     context.arc(missle.x, missle.y, 5, 0, (2 * Math.PI));
     context.fill();
-  }
-
-  if (localPlayerDied) {
-    if (!localPlayer) return;
-
-    // respawn local player
-    localPlayer = null;
-    socket.emit('new player');
-
-    // only alert user once that they died before respawning
-    alert('you died!');
-    console.log('you died!');
   }
 });

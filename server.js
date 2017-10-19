@@ -33,6 +33,8 @@ io.on('connection', function (socket) {
             socketId: socket.id,
             x: 300,
             y: 300,
+            kills: 0,
+            deaths: 0,
             missle: {
                 x: -1,
                 y: -1,
@@ -102,7 +104,10 @@ function checkAllCollisions(players, socketId) {
                 var otherPlayer = players[otherKey];
                 if (missle.x >= otherPlayer.x - 15 && missle.x <= otherPlayer.x + 15) {
                     if (missle.y >= otherPlayer.y - 15 && missle.y <= otherPlayer.y + 15) {
-                        delete players[otherKey];
+                        players[otherKey].deaths += 1;
+                        players[otherKey].x = 300;
+                        players[otherKey].y = 300;
+                        io.sockets.emit('death', otherKey);
                     }
                 }
             }
