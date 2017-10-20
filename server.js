@@ -94,14 +94,12 @@ function fireMissles(players, socketId, movement) {
 function checkAllCollisions(players, socketId) {
     var player = players[socketId] || {};
     for (var key in players) {
-        // iterate through missles. check to see if any missle hit a player.
         var player = players[key];
         var missle = player.missle;
         if (!missle || missle.x < 0 || missle.y < 0) continue;
 
         for (var otherKey in players) {
             if (key != otherKey) {
-                // check missle collision here
                 var otherPlayer = players[otherKey];
                 if (missle.x >= otherPlayer.x - 15 && missle.x <= otherPlayer.x + 15) {
                     if (missle.y >= otherPlayer.y - 15 && missle.y <= otherPlayer.y + 15) {

@@ -9,5 +9,5 @@ Play on https://itsaballgameorsomething.herokuapp.com/
 ## WishList
     [x] remove ball on disconnect
     [x] collision handling
+    [x] nicknames for player
     [] smoothing!
-    [] nicknames for player

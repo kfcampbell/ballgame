@@ -92,12 +92,22 @@ setInterval(function () {
     localPlayer.y += 5;
   }
 
-  renderLocalPlayerPosition();
+  renderLocalPlayerPosition(localPlayer);
 }, 1000 / 60);
 
-function renderLocalPlayerPosition() {
+function renderLocalPlayerPosition(serverPlayer) {
   if (!localPlayer) return;
   if (localPlayer.x < 0 || localPlayer.y < 0) return;
+  const toleratedMarginOfError = 7;
+
+  // check to see if we're within the tolerated margin of error
+  if(Math.abs(localPlayer.x - serverPlayer.x) > toleratedMarginOfError){
+    localPlayer.x = serverPlayer.x;
+  }
+  if(Math.abs(localPlayer.y - serverPlayer.y) > toleratedMarginOfError){
+    localPlayer.y = serverPlayer.y;
+  }
+
   var color = localPlayer.color;
   context.fillStyle = color;
   context.beginPath();
@@ -143,7 +153,7 @@ socket.on('state', function (players) {
     if (localPlayer && localPlayer.socketId === id) {
       var serverLocalPlayer = players[id];
       localPlayer = serverLocalPlayer;
-      renderLocalPlayerPosition();
+      renderLocalPlayerPosition(serverLocalPlayer);
       renderLocalPlayerMisslePosition();
       continue;
     }
