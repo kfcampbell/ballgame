@@ -51,7 +51,15 @@ document.addEventListener('keyup', function (event) {
   }
 });
 
-socket.emit('new player');
+window.onload = function () {
+  var nickname = prompt("What should I call you?", "Elon Musk");
+  if (nickname == null || nickname == "") {
+    nickname = "Elon Musk";
+  }
+
+  socket.emit('new player', nickname);
+}
+
 socket.on('player_assignment', function (player) {
   localPlayer = player;
   movement = {
@@ -106,6 +114,26 @@ function renderLocalPlayerMisslePosition() {
   context.fill();
 }
 
+function renderScoreboard(players) {
+  var table = document.getElementById('scoreTable');
+  while(table.rows.length > 1){
+    table.deleteRow(table.rows.length - 1);
+  }
+  
+  var i = 1;
+  for(var key in players){
+    var currPlayer = players[key];
+    var row = table.insertRow(i);
+    var nameCell = row.insertCell(0);
+    var killsCell = row.insertCell(1);
+    var deathsCell = row.insertCell(2);
+
+    nameCell.innerHTML = currPlayer.nickname;
+    killsCell.innerHTML = currPlayer.kills;
+    deathsCell.innerHTML = currPlayer.deaths;
+    i++;
+  }
+}
 
 socket.on('state', function (players) {
   context.clearRect(0, 0, 800, 600);
@@ -117,7 +145,6 @@ socket.on('state', function (players) {
       localPlayer = serverLocalPlayer;
       renderLocalPlayerPosition();
       renderLocalPlayerMisslePosition();
-      localPlayerDied = false;
       continue;
     }
 
@@ -138,15 +165,5 @@ socket.on('state', function (players) {
     context.fill();
   }
 
-  if (localPlayerDied) {
-    if (!localPlayer) return;
-
-    // respawn local player
-    localPlayer = null;
-    socket.emit('new player');
-
-    // only alert user once that they died before respawning
-    alert('you died!');
-    console.log('you died!');
-  }
+  renderScoreboard(players);
 });

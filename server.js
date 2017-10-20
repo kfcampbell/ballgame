@@ -28,11 +28,14 @@ server.listen(port, function () {
 var players = {};
 io.on('connection', function (socket) {
 
-    socket.on('new player', function () {
+    socket.on('new player', function (name) {
         players[socket.id] = {
             socketId: socket.id,
+            nickname: name,
             x: 300,
             y: 300,
+            kills: 0,
+            deaths: 0,
             missle: {
                 x: -1,
                 y: -1,
@@ -102,7 +105,10 @@ function checkAllCollisions(players, socketId) {
                 var otherPlayer = players[otherKey];
                 if (missle.x >= otherPlayer.x - 15 && missle.x <= otherPlayer.x + 15) {
                     if (missle.y >= otherPlayer.y - 15 && missle.y <= otherPlayer.y + 15) {
-                        delete players[otherKey];
+                        players[otherKey].deaths += 1;
+                        players[otherKey].x = 300;
+                        players[otherKey].y = 300;
+                        players[key].kills += 1;
                     }
                 }
             }
