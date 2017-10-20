@@ -51,7 +51,15 @@ document.addEventListener('keyup', function (event) {
   }
 });
 
-socket.emit('new player');
+window.onload = function () {
+  var nickname = prompt("What should I call you?", "Elon Musk");
+  if (nickname == null || nickname == "") {
+    nickname = "Elon Musk";
+  }
+
+  socket.emit('new player', nickname);
+}
+
 socket.on('player_assignment', function (player) {
   localPlayer = player;
   movement = {
@@ -106,20 +114,26 @@ function renderLocalPlayerMisslePosition() {
   context.fill();
 }
 
-// make this take in the whole player. reassign local player and set the title.
-socket.on('death', function(key){
-  if(key === localPlayer.socketId){
-    //alert('you died!');
-    document.getElementById('statsCounter').innerHTML = "Kills: " + 0 + " // Deaths: 500";
+function renderScoreboard(players) {
+  var table = document.getElementById('scoreTable');
+  while(table.rows.length > 1){
+    table.deleteRow(table.rows.length - 1);
   }
-});
+  
+  var i = 1;
+  for(var key in players){
+    var currPlayer = players[key];
+    var row = table.insertRow(i);
+    var nameCell = row.insertCell(0);
+    var killsCell = row.insertCell(1);
+    var deathsCell = row.insertCell(2);
 
-// make this take in the whole player. reassign local player and then set the title.
-socket.on('kill', function(key){
-  if(key === localPlayer.socketId){
-    document.getElementById('statsCounter').innerHTML = "Kills: " + (localPlayer.kills + 1) + " // Deaths: 500";
+    nameCell.innerHTML = currPlayer.nickname;
+    killsCell.innerHTML = currPlayer.kills;
+    deathsCell.innerHTML = currPlayer.deaths;
+    i++;
   }
-});
+}
 
 socket.on('state', function (players) {
   context.clearRect(0, 0, 800, 600);
@@ -150,4 +164,6 @@ socket.on('state', function (players) {
     context.arc(missle.x, missle.y, 5, 0, (2 * Math.PI));
     context.fill();
   }
+
+  renderScoreboard(players);
 });

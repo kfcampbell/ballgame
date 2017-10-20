@@ -28,9 +28,10 @@ server.listen(port, function () {
 var players = {};
 io.on('connection', function (socket) {
 
-    socket.on('new player', function () {
+    socket.on('new player', function (name) {
         players[socket.id] = {
             socketId: socket.id,
+            nickname: name,
             x: 300,
             y: 300,
             kills: 0,
@@ -107,9 +108,7 @@ function checkAllCollisions(players, socketId) {
                         players[otherKey].deaths += 1;
                         players[otherKey].x = 300;
                         players[otherKey].y = 300;
-                        players[socketId].kills += 1;
-                        io.sockets.emit('death', otherKey);
-                        io.sockets.emit('kill', socketId);
+                        players[key].kills += 1;
                     }
                 }
             }
